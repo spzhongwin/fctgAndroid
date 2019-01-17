@@ -1,0 +1,117 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/gray_bg"
+    android:padding="10dp"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+        <LinearLayout
+            android:id="@+id/layout_ccccc_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentLeft="true"
+            android:orientation="vertical">
+            <TextView
+                android:id="@+id/layout_fenjian_two_xiaoqu"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text=""
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
+
+            <TextView
+                android:id="@+id/layout_fenjian_two_fangjianhao"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:paddingTop="5dp"
+                android:text=""
+                android:textSize="13sp"
+                android:visibility="gone"
+                android:textColor="@color/black"/>
+        </LinearLayout>
+        <TextView
+            android:id="@+id/layout_fenjian_two_user"
+            android:layout_width="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_alignBottom="@+id/layout_ccccc_layout"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:layout_centerVertical="true"
+            android:textSize="11sp"
+            android:layout_gravity="center"
+            android:gravity="center"
+            android:textColor="@color/gray"/>
+    </RelativeLayout>
+
+
+
+    <com.example.rubbishclassification.view.MyGridView
+        android:id="@+id/layout_fenjian_two_grid_view"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="50dp"
+        android:numColumns="4"
+        android:verticalSpacing="10dp"
+        android:horizontalSpacing="10dp" />
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="上传图片"
+        android:textSize="12sp"
+        android:layout_marginTop="10dp"
+        android:textColor="@color/gray"/>
+
+    <LinearLayout
+        android:id="@+id/layout_fenjian_two_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:visibility="invisible"
+        android:orientation="horizontal">
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="错误分拣原因："
+            android:textSize="12sp"
+            android:textColor="@color/rad"/>
+        <TextView
+            android:id="@+id/layout_fenjian_two_buchongxinxi"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:paddingLeft="5dp"
+            android:text=""
+            android:textSize="12sp"
+            android:textColor="@color/gray"/>
+
+    </LinearLayout>
+
+    <TextView
+        android:id="@+id/layout_fenjian_two_buchong"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="点击补充错误分拣原因"
+        android:textSize="12sp"
+        android:layout_marginTop="30dp"
+        android:padding="20dp"
+        android:layout_gravity="center"
+        android:gravity="center"
+        android:textColor="@color/myColor"/>
+
+    <Button
+        android:id="@+id/layout_fenjian_two_commit"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginTop="30dp"
+        android:layout_marginLeft="30dp"
+        android:layout_marginRight="30dp"
+        android:background="@drawable/button_login"
+        android:text="提交"
+        android:textColor="@color/white"
+        android:textSize="16sp" />
+</LinearLayout>

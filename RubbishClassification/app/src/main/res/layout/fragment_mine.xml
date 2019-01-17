@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+
+    <TextView
+        android:id="@+id/mine"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转到扫描界面"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/mine2"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发送get请求"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/mine3"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="发送post请求"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/mine4"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="显示结果"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+    <TextView
+        android:id="@+id/mine5"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:text="跳转到图片选择页面"
+        android:gravity="center"
+        android:padding="10dp"/>
+
+
+</LinearLayout>
