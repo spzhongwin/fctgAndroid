@@ -50,7 +50,7 @@ public class FenjianPageOneActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_fenjian_page_one);
         setTitleBackVisibity(true);
-        setTitleText("垃圾袋分拣");
+        setTitleText("垃圾袋督导");
 
         textView1 = findViewById(R.id.layout_fenjian_one_uesr);
         textView2 = findViewById(R.id.layout_fenjian_one_text_xiaoqu);

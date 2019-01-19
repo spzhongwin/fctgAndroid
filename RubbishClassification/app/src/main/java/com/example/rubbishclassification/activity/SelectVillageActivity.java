@@ -520,7 +520,7 @@ public class SelectVillageActivity extends BaseActivity {
     private void showDialog(){
         String message = "";
         if("1".equals(from)){
-            message = "是否确认选择该小区进行分拣";
+            message = "是否确认选择该小区进行督导";
         }else{
             message = "是否确认选择该小区进行评分";
         }

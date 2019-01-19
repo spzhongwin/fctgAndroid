@@ -85,7 +85,7 @@ public class FenjianPageTwoActivity extends BaseActivity {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.layout_fenjian_page_two);
         setTitleBackVisibity(true);
-        setTitleText("垃圾袋分拣");
+        setTitleText("垃圾袋督导");
 
         streetId = getIntent().getStringExtra("streetId");
         communityId = getIntent().getStringExtra("communityId");
@@ -118,13 +118,13 @@ public class FenjianPageTwoActivity extends BaseActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              if(TextUtils.isEmpty(remarks)){
-                  AppTools.toastShort("请补充分拣原因");
-                  return;
-              }else if(myImgListNeedUpLoad.size() == 0){
+              if(myImgListNeedUpLoad.size() == 0){
                   AppTools.toastShort("请拍照");
                   return;
-              }else{
+              }else if(TextUtils.isEmpty(remarks)){
+                  AppTools.toastShort("请补充原因");
+                  return;
+              }else {
                   loading.show();
                   myfinish();
               }
@@ -278,14 +278,14 @@ public class FenjianPageTwoActivity extends BaseActivity {
     @Override
     public void onBackClick(View v) {
         super.onBackClick(v);
-        showDialogTip("确定退出垃圾袋分拣吗？",1);
+        showDialogTip("确定退出垃圾袋督导吗？",1);
     }
 
     // 物理返回键退出程序
     @Override
     public boolean onKeyDown(int keyCode, KeyEvent event) {
         if (keyCode == KeyEvent.KEYCODE_BACK && event.getAction() == KeyEvent.ACTION_DOWN) {
-            showDialogTip("确定退出垃圾袋分拣吗？",1);
+            showDialogTip("确定退出垃圾袋督导吗？",1);
             return false;
         }
         return super.onKeyDown(keyCode, event);

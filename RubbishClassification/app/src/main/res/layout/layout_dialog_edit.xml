@@ -14,7 +14,7 @@
         android:padding="10dp"
         android:gravity="center"
         android:layout_gravity="center"
-        android:text="请输入分拣错误原因"
+        android:text="请输入错误原因"
         android:textSize="18sp"
         android:textColor="@color/myColor"/>
 

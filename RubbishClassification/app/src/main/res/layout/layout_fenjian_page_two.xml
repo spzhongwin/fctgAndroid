@@ -77,7 +77,7 @@
         <TextView
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:text="错误分拣原因："
+            android:text="错误原因："
             android:textSize="12sp"
             android:textColor="@color/rad"/>
         <TextView
@@ -95,7 +95,7 @@
         android:id="@+id/layout_fenjian_two_buchong"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:text="点击补充错误分拣原因"
+        android:text="点击补充错误原因"
         android:textSize="12sp"
         android:layout_marginTop="30dp"
         android:padding="20dp"

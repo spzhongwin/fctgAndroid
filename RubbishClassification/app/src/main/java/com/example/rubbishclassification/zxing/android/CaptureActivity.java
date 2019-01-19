@@ -97,6 +97,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
     //分拣进来，或者是物业人员分发袋子页面进来
     private String from = "";
     private String fangjianhao = "";
+    private TextView title;
     /**
      * @param pm
      * @return 是否有闪光灯
@@ -181,6 +182,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         backIv = findViewById(R.id.backIv);
         backIv.setOnClickListener(this);
 
+        title = findViewById(R.id.capture_title_text);
         textView1 = findViewById(R.id.capture_text_user);
         textView2 = findViewById(R.id.capture_text_xiaoqu);
         textView3 = findViewById(R.id.capture_text_tiaoguo);
@@ -198,9 +200,11 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         if (!TextUtils.isEmpty(from) && "1".equals(from)) {
             textView2.setVisibility(View.VISIBLE);
             textView3.setVisibility(View.VISIBLE);
+            title.setText("垃圾袋督导");
         } else {
             textView2.setVisibility(View.INVISIBLE);
             textView3.setVisibility(View.INVISIBLE);
+            title.setText("垃圾袋发放");
         }
 
         //flashLightIv = findViewById(R.id.flashLightIv);

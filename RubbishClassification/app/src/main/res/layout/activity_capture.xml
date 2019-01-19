@@ -41,11 +41,12 @@
                     app:srcCompat="@mipmap/back" />
 
                 <TextView
+                    android:id="@+id/capture_title_text"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerInParent="true"
                     android:paddingTop="20dp"
-                    android:text="垃圾袋分拣"
+                    android:text="垃圾袋督导"
                     android:textColor="#ffffff"
                     android:textSize="16sp" />
             </RelativeLayout>

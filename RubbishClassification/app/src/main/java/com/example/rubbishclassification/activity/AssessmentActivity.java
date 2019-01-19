@@ -333,7 +333,7 @@ public class AssessmentActivity extends BaseActivity {
                     if(curQuestionModel.assessmentFraction != 0){
                         tvFractal.setText((AssessmentOperate.getInstance().getModel().totalFraction-curQuestionModel.assessmentFraction+seekBar.getProgress())+"");
                     }else{
-                        tvFractal.setText((AssessmentOperate.getInstance().getModel().totalFraction-seekBar.getProgress())+"");
+                        tvFractal.setText((AssessmentOperate.getInstance().getModel().totalFraction+seekBar.getProgress())+"");
                     }
 
                 }
@@ -350,10 +350,10 @@ public class AssessmentActivity extends BaseActivity {
 //        //添加建议扣分
         for (int i = 0; i < curQuestionModel.answerJson.size();i++) {
             String des = curQuestionModel.answerJson.get(i).get("des")+"";
-            String des1 = des.substring(0, des.indexOf("扣"));
-            String des2 =des.substring(des.indexOf("扣"));
+//            String des1 = des.substring(0, des.indexOf("扣"));
+//            String des2 =des.substring(des.indexOf("扣"));
             TextView textView = new TextView(this);
-            textView.setText(des1+"  "+des2);
+            textView.setText(des);
             textView.setGravity(Gravity.END);
             textView.setTextSize(TypedValue.COMPLEX_UNIT_SP,13);
             textView.setTextColor(getResources().getColor(R.color.black));

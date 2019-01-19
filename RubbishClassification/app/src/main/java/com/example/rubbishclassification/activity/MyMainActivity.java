@@ -12,6 +12,7 @@ import android.view.KeyEvent;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.AdapterView;
+import android.widget.Button;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
@@ -51,8 +52,10 @@ public class MyMainActivity extends BaseActivity {
     private TextView textView1;
     private TextView textView2;
     private TextView textView3;
-    private ImageView imageView1;
-    private ImageView imageView2;
+    private Button imageView1;
+    private Button imageView2;
+    private Button imageView3;
+    private Button imageView4;
     private List<Map<String, String>> assessmentList;
     private AlertDialog dialog;
     // 物理返回键退出程序
@@ -69,64 +72,67 @@ public class MyMainActivity extends BaseActivity {
         //判断角色显示不同的UI和不同的进入页面
         //1 是 分拣人员，2是物业人员，默认分拣
         if ("2".equals(UserBean.getUserBean().getRole())) {
-            textView1.setText("发放袋子");
-            textView2.setText("发放记录");
-            imageView1.setImageResource(R.mipmap.layout_main_rubbishbag);
-            imageView2.setImageResource(R.mipmap.layout_main_record);
+            imageView1.setEnabled(false);
+            imageView2.setEnabled(false);
+            imageView3.setEnabled(true);
+            imageView4.setEnabled(true);
         } else {
-            textView1.setText("小区评价");
-            textView2.setText("分拣");
-            imageView1.setImageResource(R.mipmap.layout_main_appraise);
-            imageView2.setImageResource(R.mipmap.layout_main_classify);
+            imageView1.setEnabled(true);
+            imageView2.setEnabled(true);
+            imageView3.setEnabled(false);
+            imageView4.setEnabled(false);
         }
         imageView1.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("2".equals(UserBean.getUserBean().getRole())) {
-                    //进入发放袋子
-                    startActivity(new Intent(MyMainActivity.this, LaJiDaiFaFangOneActivity.class));
-                } else {
-                    //小区评价
-                    String url = AppURI.getIsHaveAssessment + "?token=" + UserBean.getUserBean().getToken() + "&userId=" + UserBean.getUserBean().getId();
-                    loading.show();
-                    DOGET(url, 1);
-                }
+                //小区评价
+                String url = AppURI.getIsHaveAssessment + "?token=" + UserBean.getUserBean().getToken() + "&userId=" + UserBean.getUserBean().getId();
+                loading.show();
+                DOGET(url, 1);
+            }
+        });
+        imageView3.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //进入发放袋子
+                startActivity(new Intent(MyMainActivity.this, LaJiDaiFaFangOneActivity.class));
             }
         });
 
         imageView2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                if ("2".equals(UserBean.getUserBean().getRole())) {
-                    //发放记录
-                    startActivity(new Intent(MyMainActivity.this, JiLuActivity.class));
-                } else {
-                    //分拣
-                    //startActivity(new Intent(MyMainActivity.this,FenjianPageOneActivity.class));
-                    Intent intent = new Intent(MyMainActivity.this, CaptureActivity.class);
-                    /*ZxingConfig是配置类
-                     *可以设置是否显示底部布局，闪光灯，相册，
-                     * 是否播放提示音  震动
-                     * 设置扫描框颜色等
-                     * 也可以不传这个参数
-                     * */
-                    ZxingConfig config = new ZxingConfig();
-                    config.setPlayBeep(false);//是否播放扫描声音 默认为true
+                //督导
+                //startActivity(new Intent(MyMainActivity.this,FenjianPageOneActivity.class));
+                Intent intent = new Intent(MyMainActivity.this, CaptureActivity.class);
+                /*ZxingConfig是配置类
+                 *可以设置是否显示底部布局，闪光灯，相册，
+                 * 是否播放提示音  震动
+                 * 设置扫描框颜色等
+                 * 也可以不传这个参数
+                 * */
+                ZxingConfig config = new ZxingConfig();
+                config.setPlayBeep(false);//是否播放扫描声音 默认为true
 //                config.setShake(false);//是否震动  默认为true
 //                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-                    config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
-                    config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
-                    config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
+                config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
+                config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+                config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
 //                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                    config.setShowFlashLight(false);
-                    config.setShowAlbum(false);
-                    intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                    intent.putExtra("from","1");
-                    startActivity(intent);
-                }
+                config.setShowFlashLight(false);
+                config.setShowAlbum(false);
+                intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+                intent.putExtra("from","1");
+                startActivity(intent);
             }
         });
-
+        imageView4.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                //发放记录
+                startActivity(new Intent(MyMainActivity.this, JiLuActivity.class));
+            }
+        });
     }
 
     @Override
@@ -194,6 +200,9 @@ public class MyMainActivity extends BaseActivity {
         textView2 = findViewById(R.id.main_text2);
         imageView1 = findViewById(R.id.main_img1);
         imageView2 = findViewById(R.id.main_img2);
+
+        imageView3 = findViewById(R.id.main_img3);
+        imageView4 = findViewById(R.id.main_img4);
 
         textView3 = findViewById(R.id.my_main_text_user);
         textView3.setText(UserBean.getUserBean().getName());
