@@ -13,7 +13,7 @@
         android:layout_height="wrap_content"
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
-        android:src="@mipmap/xiaoqu"/>
+        android:src="@mipmap/shouye"/>
 
     <RelativeLayout
         android:layout_width="match_parent"
