@@ -1,8 +1,10 @@
 package com.example.rubbishclassification.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
 import android.graphics.Color;
 import android.graphics.drawable.ColorDrawable;
 import android.net.Uri;
@@ -11,6 +13,7 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.v4.app.ActivityCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
@@ -24,6 +27,7 @@ import android.widget.EditText;
 import android.widget.GridView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.alibaba.sdk.android.oss.ClientException;
 import com.alibaba.sdk.android.oss.ServiceException;
@@ -163,18 +167,27 @@ public class FenjianPageTwoActivity extends BaseActivity {
     private void takeCamera(){
         if(AppTools.cameraIsCanUse()){
             //用于保存调用相机拍照后所生成的文件
-            filePath = new File(Environment.getExternalStorageDirectory().getPath(), System.currentTimeMillis() + ".jpg");
-            //跳转到调用系统相机
-            Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
-            //判断版本
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {   //如果在Android7.0以上,使用FileProvider获取Uri
-                intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
-                Uri contentUri = FileProvider.getUriForFile(FenjianPageTwoActivity.this, FenjianPageTwoActivity.this.getApplicationContext().getPackageName() + ".provider",filePath );
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
-            } else {    //否则使用Uri.fromFile(file)方法获取Uri
-                intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(filePath));
+            if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
+                    != PackageManager.PERMISSION_GRANTED) {
+                //用户已经拒绝过一次，再次弹出权限申请对话框需要给用户一个解释
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission
+                        .WRITE_EXTERNAL_STORAGE)) {
+                    Toast.makeText(this, "请开通相关权限，否则无法正常使用", Toast.LENGTH_SHORT).show();
+                }
+            } else {
+                filePath = new File(Environment.getExternalStorageDirectory().getPath(), System.currentTimeMillis() + ".jpg");
+                //跳转到调用系统相机
+                Intent intent = new Intent(MediaStore.ACTION_IMAGE_CAPTURE);
+                //判断版本
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.N) {   //如果在Android7.0以上,使用FileProvider获取Uri
+                    intent.setFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION);
+                    Uri contentUri = FileProvider.getUriForFile(FenjianPageTwoActivity.this, FenjianPageTwoActivity.this.getApplicationContext().getPackageName() + ".provider",filePath );
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, contentUri);
+                } else {    //否则使用Uri.fromFile(file)方法获取Uri
+                    intent.putExtra(MediaStore.EXTRA_OUTPUT, Uri.fromFile(filePath));
+                }
+                startActivityForResult(intent, REQUEST_CAMERA_CODE);
             }
-            startActivityForResult(intent, REQUEST_CAMERA_CODE);
         }else{
             showDialogTip("请开启相机权限",0);
         }

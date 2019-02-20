@@ -3,9 +3,9 @@ package com.example.rubbishclassification.tools;
 import com.example.rubbishclassification.bean.UserBean;
 
 public class AppURI {
-    //域名
+    //域名  //http://112.74.187.228
     public static String domain = "http://112.74.187.228";
-    //evn
+    //evn  生产环境-ftcg;测试环境-testftcg
     public static String evn = "/testftcg";
 
     /**
