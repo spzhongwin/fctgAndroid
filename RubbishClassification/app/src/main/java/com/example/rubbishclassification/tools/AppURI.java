@@ -70,6 +70,11 @@ public class AppURI {
      * 分拣
      * */
     public static String upSorting = domain+evn+"/sorting/upSorting";
+
+    /**
+     * 督察，扫描结果查询小区信息
+     * */
+    public static String sweepcCodeSorting = domain+evn+"/sorting/sweepcCodeSorting";
     /**
      * 物业人员发放袋子
      * */

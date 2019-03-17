@@ -15,23 +15,19 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignParentLeft="true"
-            android:orientation="vertical">
+            android:orientation="horizontal">
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="小区："
+                android:textSize="13sp"
+                android:textColor="@color/black"/>
             <TextView
                 android:id="@+id/layout_fenjian_two_xiaoqu"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text=""
+                android:text="请选择小区"
                 android:textSize="13sp"
-                android:textColor="@color/black"/>
-
-            <TextView
-                android:id="@+id/layout_fenjian_two_fangjianhao"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:paddingTop="5dp"
-                android:text=""
-                android:textSize="13sp"
-                android:visibility="gone"
                 android:textColor="@color/black"/>
         </LinearLayout>
         <TextView
@@ -47,9 +43,19 @@
             android:gravity="center"
             android:textColor="@color/gray"/>
     </RelativeLayout>
-
-
-
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        android:orientation="horizontal">
+        <TextView
+            android:id="@+id/layout_fenjian_two_fangjianhao"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text=""
+            android:textSize="13sp"
+            android:textColor="@color/black"/>
+    </LinearLayout>
     <com.example.rubbishclassification.view.MyGridView
         android:id="@+id/layout_fenjian_two_grid_view"
         android:layout_width="match_parent"

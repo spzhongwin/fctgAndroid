@@ -43,6 +43,7 @@ import com.example.rubbishclassification.tools.AppTools;
 import com.example.rubbishclassification.tools.AppURI;
 import com.example.rubbishclassification.tools.OkHttp3Utils;
 import com.example.rubbishclassification.tools.UploadHelper;
+import com.example.rubbishclassification.zxing.android.CaptureActivity;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -75,6 +76,7 @@ public class FenjianPageTwoActivity extends BaseActivity {
     private String remarks="";
     private String villageName="";
     private String qrCodeId="";
+    private String fangjianhao="";
 
     private ArrayList<String> myImgList = new ArrayList<>();
     private GridAdapter gridAdapter;
@@ -96,6 +98,7 @@ public class FenjianPageTwoActivity extends BaseActivity {
         villageId = getIntent().getStringExtra("villageId");
         villageName = getIntent().getStringExtra("villageName");
         qrCodeId = getIntent().getStringExtra("qrCodeId");
+        fangjianhao = getIntent().getStringExtra("fangjianhao");
 
         textView1 = findViewById(R.id.layout_fenjian_two_xiaoqu);
         textView2 = findViewById(R.id.layout_fenjian_two_fangjianhao);
@@ -104,7 +107,23 @@ public class FenjianPageTwoActivity extends BaseActivity {
         textView5 = findViewById(R.id.layout_fenjian_two_buchongxinxi);
         linearLayout = findViewById(R.id.layout_fenjian_two_layout);
 
-        textView1.setText("小区："+villageName);
+        if(!TextUtils.isEmpty(villageName)){
+            textView1.setText(villageName);
+        }
+        if(!TextUtils.isEmpty(fangjianhao)){
+            textView2.setText( "房间号："+fangjianhao);
+        }else{
+            textView2.setVisibility(View.GONE);
+        }
+
+        textView1.setOnClickListener(new View.OnClickListener(){
+            @Override
+            public void onClick(View view) {
+                Intent intent = new Intent(FenjianPageTwoActivity.this, SelectVillageActivity.class);
+                intent.putExtra("from", "1");
+                startActivityForResult(intent, 10001);
+            }
+        });
         //textView2.setText(qrCodeId);
         textView3.setText("当前登录用户："+UserBean.getUserBean().getName());
 
@@ -122,16 +141,20 @@ public class FenjianPageTwoActivity extends BaseActivity {
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-              if(myImgListNeedUpLoad.size() == 0){
-                  AppTools.toastShort("请拍照");
-                  return;
-              }else if(TextUtils.isEmpty(remarks)){
-                  AppTools.toastShort("请补充原因");
-                  return;
-              }else {
-                  loading.show();
-                  myfinish();
-              }
+                if(textView1.getText().toString().equals("请选择小区")){
+                    AppTools.toastShort("请选择小区");
+                    return;
+                }
+                if(myImgListNeedUpLoad.size() == 0){
+                    AppTools.toastShort("请拍照");
+                    return;
+                }else if(TextUtils.isEmpty(remarks)){
+                    AppTools.toastShort("请补充原因");
+                    return;
+                }else {
+                    loading.show();
+                    myfinish();
+                }
             }
         });
 
@@ -198,6 +221,15 @@ public class FenjianPageTwoActivity extends BaseActivity {
         super.onActivityResult(requestCode, resultCode, data);
         if(resultCode == RESULT_OK) {
             switch (requestCode) {
+                case 10001:
+                    if (data != null) {
+                        streetId = data.getStringExtra("streetId");
+                        communityId = data.getStringExtra("communityId");
+                        villageId = data.getStringExtra("villageId");
+                        villageName = data.getStringExtra("villageName");
+                        textView1.setText(villageName);
+                    }
+                    break;
                 // 选择照片
                 case REQUEST_CAMERA_CODE:
                     loading.show();

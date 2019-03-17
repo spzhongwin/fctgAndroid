@@ -187,7 +187,7 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         textView2 = findViewById(R.id.capture_text_xiaoqu);
         textView3 = findViewById(R.id.capture_text_tiaoguo);
 
-        textView2.setOnClickListener(this);
+//        textView2.setOnClickListener(this);
         textView3.setOnClickListener(this);
 
         //设置当前操作用户
@@ -198,11 +198,11 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         fangjianhao = getIntent().getStringExtra("fangjianhao");
 
         if (!TextUtils.isEmpty(from) && "1".equals(from)) {
-            textView2.setVisibility(View.VISIBLE);
+            //textView2.setVisibility(View.VISIBLE);
             textView3.setVisibility(View.VISIBLE);
             title.setText("垃圾袋督导");
         } else {
-            textView2.setVisibility(View.INVISIBLE);
+            //textView2.setVisibility(View.INVISIBLE);
             textView3.setVisibility(View.INVISIBLE);
             title.setText("垃圾袋发放");
         }
@@ -258,23 +258,9 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         saomiaojieguo = rawResult.getText();
 
         if (!TextUtils.isEmpty(from) && "1".equals(from)) {
-            if ("选择小区".equals(textView2.getText().toString())) {
-                AppTools.toastShort("请选择小区");
-            } else {
-                Intent intent2 = new Intent(CaptureActivity.this, FenjianPageTwoActivity.class);
-                intent2.putExtra("streetId", streetId);
-                intent2.putExtra("communityId", communityId);
-                intent2.putExtra("villageId", villageId);
-                intent2.putExtra("villageName", villageName);
-                intent2.putExtra("qrCodeId", saomiaojieguo);
-                startActivityForResult(intent2, 10003);
-            }
+            sendQueryVillage();
         } else {
             next();
-//            Intent intent = getIntent();
-//            intent.putExtra(Constant.CODED_CONTENT, rawResult.getText());
-//            setResult(RESULT_OK, intent);
-//            this.finish();
         }
 
     }
@@ -415,17 +401,14 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
                 startActivityForResult(intent, 10001);
                 break;
             case R.id.capture_text_tiaoguo:
-                if ("选择小区".equals(textView2.getText().toString())) {
-                    AppTools.toastShort("请选择小区");
-                } else {
-                    Intent intent2 = new Intent(CaptureActivity.this, FenjianPageTwoActivity.class);
-                    intent2.putExtra("streetId", streetId);
-                    intent2.putExtra("communityId", communityId);
-                    intent2.putExtra("villageId", villageId);
-                    intent2.putExtra("villageName", villageName);
-                    intent2.putExtra("qrCodeId", saomiaojieguo);
-                    startActivityForResult(intent2, 10003);
-                }
+                Intent intent2 = new Intent(CaptureActivity.this, FenjianPageTwoActivity.class);
+                intent2.putExtra("streetId", streetId);
+                intent2.putExtra("communityId", communityId);
+                intent2.putExtra("villageId", villageId);
+                intent2.putExtra("villageName", villageName);
+                intent2.putExtra("qrCodeId", saomiaojieguo);
+                intent2.putExtra("fangjianhao","");
+                startActivityForResult(intent2, 10003);
                 break;
             default:
                 break;
@@ -539,5 +522,55 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
         });
     }
 
+    //查询相应的用户列表
+    public void sendQueryVillage(){
+        String url = AppURI.setDomainUrl(AppURI.sweepcCodeSorting);
+        url += "qrCodeId="+saomiaojieguo;
+        Log.e("---",url);
+        OkHttp3Utils.doGet(url, new Callback() {
+            @Override
+            public void onFailure(Call call, IOException e) {
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //loading.dismiss();
+                        AppTools.toastLong("系统网络异常");
+                    }
+                });
+            }
+
+            @Override
+            public void onResponse(Call call, Response response) throws IOException {
+                //对象封装
+                final String result = response.body().string();
+                runOnUiThread(new Runnable() {
+                    @Override
+                    public void run() {
+                        //loading.dismiss();
+                        try {
+                            JSONObject jsonObject = new JSONObject(result);
+                            String code = jsonObject.getString("code");
+                            JSONObject data = jsonObject.getJSONObject("data");
+                            if (code.equals("1")){
+                                Intent intent2 = new Intent(CaptureActivity.this, FenjianPageTwoActivity.class);
+                                intent2.putExtra("streetId", data.getJSONObject("streetInfo").getString("id"));
+                                intent2.putExtra("communityId", data.getJSONObject("communityInfo").getString("id"));
+                                intent2.putExtra("villageId", data.getJSONObject("villageInfo").getString("id"));
+                                intent2.putExtra("villageName", data.getJSONObject("villageInfo").getString("name"));
+                                intent2.putExtra("qrCodeId", saomiaojieguo);
+                                intent2.putExtra("fangjianhao",data.getString("roomNumberText"));
+                                startActivityForResult(intent2, 10003);
+                            }else{
+                                AppTools.toastLong(jsonObject.getString("msg"));
+                            }
+                        } catch (JSONException e) {
+                            AppTools.toastLong("解析异常");
+                            e.printStackTrace();
+                        }
+                    }
+                });
+            }
+        });
+    }
 
 }
