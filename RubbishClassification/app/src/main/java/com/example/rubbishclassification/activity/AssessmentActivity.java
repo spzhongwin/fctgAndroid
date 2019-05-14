@@ -430,9 +430,9 @@ public class AssessmentActivity extends BaseActivity {
                 // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
                 if (i != PackageManager.PERMISSION_GRANTED) {
                     // 提示用户应该去应用设置界面手动开启权限
-                    showDialogTip();
+                    //showDialogTip();
                 } else {
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -461,11 +461,7 @@ public class AssessmentActivity extends BaseActivity {
             //用于保存调用相机拍照后所生成的文件
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
-                //用户已经拒绝过一次，再次弹出权限申请对话框需要给用户一个解释
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission
-                        .WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "请开通相关权限，否则无法正常使用", Toast.LENGTH_SHORT).show();
-                }
+                startRequestPermission();
             } else {
                 filePath = new File(Environment.getExternalStorageDirectory().getPath(), System.currentTimeMillis() + ".jpg");
                 //跳转到调用系统相机
@@ -481,12 +477,12 @@ public class AssessmentActivity extends BaseActivity {
                 startActivityForResult(intent, REQUEST_CAMERA_CODE);
             }
         }else{
-            showDialogTip();
+            startRequestPermission();
         }
 
     }
 
-    private String[] permissions = {Manifest.permission.CAMERA};
+    private String[] permissions = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
     // 开始提交请求权限
     private void startRequestPermission() {
         ActivityCompat.requestPermissions(this, permissions, 321);
@@ -507,10 +503,12 @@ public class AssessmentActivity extends BaseActivity {
                         // 提示用户去应用设置界面手动开启权限
                         showDialogTip();
                     } else
-                        finish();
+                        showDialogTip();
                 } else {
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                showDialogTip();
             }
         }
     }
@@ -576,7 +574,7 @@ public class AssessmentActivity extends BaseActivity {
         myDialog.setCanceledOnTouchOutside(false);//使除了dialog以外的地方不能被点击
         myDialog.show();
     }
-
+    private AlertDialog dialog;
     /**
      * 相机权限未开启提示
      * */
@@ -585,7 +583,7 @@ public class AssessmentActivity extends BaseActivity {
         final View view = factory.inflate(R.layout.layout_dialog, null);
         final TextView textView =  view.findViewById(R.id.layout_dialog_text);
         textView.setText("相机权限未开启，请设置开启");
-        AlertDialog dialog = new AlertDialog.Builder(this)
+        dialog = new AlertDialog.Builder(this)
                 .setView(view)
                 .setNegativeButton("取消", new DialogInterface.OnClickListener() {
                     @Override
@@ -596,6 +594,7 @@ public class AssessmentActivity extends BaseActivity {
                 .setPositiveButton("确定",new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                         goToAppSetting();
                     }
                 }).create();

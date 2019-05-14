@@ -68,7 +68,7 @@ public class MyMainActivity extends BaseActivity {
     // 物理返回键退出程序
     private long exitTime = 0;
 
-    private String[] permissions = {Manifest.permission.CAMERA};
+    private String[] permissions = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -124,7 +124,11 @@ public class MyMainActivity extends BaseActivity {
                         startCaptureActivity();
                     }
                 }else{
-                    startCaptureActivity();
+                    if(AppTools.cameraIsCanUse()){
+                        startCaptureActivity();
+                    }else{
+                        startRequestPermission();
+                    }
                 }
 
             }
@@ -181,10 +185,12 @@ public class MyMainActivity extends BaseActivity {
                         // 提示用户去应用设置界面手动开启权限
                         showDialogTip();
                     } else
-                        finish();
+                        showDialogTip();
                 } else {
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
+            }else{
+                showDialogTip();
             }
         }
     }
@@ -252,19 +258,15 @@ public class MyMainActivity extends BaseActivity {
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
         super.onActivityResult(requestCode, resultCode, data);
         if (requestCode == 123) {
-
             if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
                 // 检查该权限是否已经获取
                 int i = ContextCompat.checkSelfPermission(this, permissions[0]);
                 // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
                 if (i != PackageManager.PERMISSION_GRANTED) {
                     // 提示用户应该去应用设置界面手动开启权限
-                  showDialogTip();
+                  //showDialogTip();
                 } else {
-                    if (dialog != null && dialog.isShowing()) {
-                        dialog.dismiss();
-                    }
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
             }
         }
@@ -501,6 +503,7 @@ public class MyMainActivity extends BaseActivity {
                 .setPositiveButton("确定",new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                         goToAppSetting();
                     }
                 }).create();

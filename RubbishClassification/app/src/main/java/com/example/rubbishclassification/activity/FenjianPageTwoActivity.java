@@ -13,7 +13,9 @@ import android.os.Bundle;
 import android.os.Environment;
 import android.provider.MediaStore;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.content.FileProvider;
 import android.text.TextUtils;
 import android.util.Log;
@@ -192,11 +194,7 @@ public class FenjianPageTwoActivity extends BaseActivity {
             //用于保存调用相机拍照后所生成的文件
             if (ActivityCompat.checkSelfPermission(this, Manifest.permission.WRITE_EXTERNAL_STORAGE)
                     != PackageManager.PERMISSION_GRANTED) {
-                //用户已经拒绝过一次，再次弹出权限申请对话框需要给用户一个解释
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission
-                        .WRITE_EXTERNAL_STORAGE)) {
-                    Toast.makeText(this, "请开通相关权限，否则无法正常使用", Toast.LENGTH_SHORT).show();
-                }
+                startRequestPermission();
             } else {
                 filePath = new File(Environment.getExternalStorageDirectory().getPath(), System.currentTimeMillis() + ".jpg");
                 //跳转到调用系统相机
@@ -212,7 +210,38 @@ public class FenjianPageTwoActivity extends BaseActivity {
                 startActivityForResult(intent, REQUEST_CAMERA_CODE);
             }
         }else{
-            showDialogTip("请开启相机权限",0);
+            startRequestPermission();
+        }
+    }
+
+    private String[] permissions = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
+    // 开始提交请求权限
+    private void startRequestPermission() {
+        ActivityCompat.requestPermissions(this, permissions, 321);
+    }
+
+    // 用户权限 申请 的回调方法
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 321) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // 判断用户是否 点击了不再提醒。(检测该权限是否还可以申请)
+                    boolean b = shouldShowRequestPermissionRationale(permissions[0]);
+                    if (!b) {
+                        // 用户还是想用我的 APP 的
+                        // 提示用户去应用设置界面手动开启权限
+                        showDialogTip("请开启相机权限",0);
+                    } else
+                        showDialogTip("请开启相机权限",0);
+                } else {
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
+            }else{
+                showDialogTip("请开启相机权限",0);
+            }
         }
     }
 
@@ -248,6 +277,19 @@ public class FenjianPageTwoActivity extends BaseActivity {
                         loadAdpater(ListExtra);
                     }
                     break;
+            }
+        }
+        if (requestCode == 123) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // 检查该权限是否已经获取
+                int i = ContextCompat.checkSelfPermission(this, permissions[0]);
+                // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                if (i != PackageManager.PERMISSION_GRANTED) {
+                    // 提示用户应该去应用设置界面手动开启权限
+                    //showDialogTip("请开启相机权限",0);
+                } else {
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }
@@ -446,6 +488,17 @@ public class FenjianPageTwoActivity extends BaseActivity {
         dialog.show();
     }
 
+    private void goToAppSetting() {
+        Intent intent = new Intent();
+
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+
+        startActivityForResult(intent, 123);
+    }
+
+
     /**
      * 相机权限未开启提示
      * */
@@ -467,8 +520,7 @@ public class FenjianPageTwoActivity extends BaseActivity {
                     public void onClick(DialogInterface dialog, int which) {
                         dialog.dismiss();
                         if(id == 0){
-                            Intent intent =new Intent(Settings.ACTION_SETTINGS);
-                            FenjianPageTwoActivity.this.startActivity(intent);
+                            goToAppSetting();
                         }else{
                             Intent intent = new Intent();
                             intent.putExtra("success","0");

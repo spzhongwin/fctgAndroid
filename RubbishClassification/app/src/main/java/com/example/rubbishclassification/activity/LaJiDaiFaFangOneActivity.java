@@ -46,7 +46,7 @@ import okhttp3.Response;
 
 public class LaJiDaiFaFangOneActivity extends BaseActivity {
 
-    private String[] permissions = {Manifest.permission.CAMERA};
+    private String[] permissions = {Manifest.permission.CAMERA,Manifest.permission.WRITE_EXTERNAL_STORAGE};
 
     private TextView textView1;
     private TextView textView2;
@@ -114,7 +114,11 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                         startCaptureActivity();
                     }
                 }else{
-                    startCaptureActivity();
+                    if(AppTools.cameraIsCanUse()){
+                        startCaptureActivity();
+                    }else{
+                        startRequestPermission();
+                    }
                 }
 
             }
@@ -164,10 +168,12 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                         // 提示用户去应用设置界面手动开启权限
                         showDialogTip();
                     } else
-                        finish();
+                        showDialogTip();
                 } else {
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
+            }else {
+                showDialogTip();
             }
         }
     }
@@ -188,6 +194,7 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                 .setPositiveButton("确定",new DialogInterface.OnClickListener(){
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
                         goToAppSetting();
                     }
                 }).create();
@@ -298,10 +305,9 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                 // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
                 if (i != PackageManager.PERMISSION_GRANTED) {
                     // 提示用户应该去应用设置界面手动开启权限
-                    showDialogTip();
+                    //showDialogTip();
                 } else {
-
-                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                    //Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
                 }
             }
         }
