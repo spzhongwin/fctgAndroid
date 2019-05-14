@@ -550,8 +550,8 @@ public class CaptureActivity extends AppCompatActivity implements SurfaceHolder.
                         try {
                             JSONObject jsonObject = new JSONObject(result);
                             String code = jsonObject.getString("code");
-                            JSONObject data = jsonObject.getJSONObject("data");
                             if (code.equals("1")){
+                                JSONObject data = jsonObject.getJSONObject("data");
                                 Intent intent2 = new Intent(CaptureActivity.this, FenjianPageTwoActivity.class);
                                 intent2.putExtra("streetId", data.getJSONObject("streetInfo").getString("id"));
                                 intent2.putExtra("communityId", data.getJSONObject("communityInfo").getString("id"));

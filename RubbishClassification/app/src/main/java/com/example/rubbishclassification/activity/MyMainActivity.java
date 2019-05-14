@@ -1,11 +1,18 @@
 package com.example.rubbishclassification.activity;
 
+import android.Manifest;
 import android.app.AlertDialog;
 import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.provider.Settings;
+import android.support.annotation.NonNull;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.ViewPager;
 import android.util.Log;
 import android.view.KeyEvent;
@@ -61,6 +68,8 @@ public class MyMainActivity extends BaseActivity {
     // 物理返回键退出程序
     private long exitTime = 0;
 
+    private String[] permissions = {Manifest.permission.CAMERA};
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -104,26 +113,20 @@ public class MyMainActivity extends BaseActivity {
             public void onClick(View v) {
                 //督导
                 //startActivity(new Intent(MyMainActivity.this,FenjianPageOneActivity.class));
-                Intent intent = new Intent(MyMainActivity.this, CaptureActivity.class);
-                /*ZxingConfig是配置类
-                 *可以设置是否显示底部布局，闪光灯，相册，
-                 * 是否播放提示音  震动
-                 * 设置扫描框颜色等
-                 * 也可以不传这个参数
-                 * */
-                ZxingConfig config = new ZxingConfig();
-                config.setPlayBeep(false);//是否播放扫描声音 默认为true
-//                config.setShake(false);//是否震动  默认为true
-//                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-                config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
-                config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
-                config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
-//                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                config.setShowFlashLight(false);
-                config.setShowAlbum(false);
-                intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                intent.putExtra("from","1");
-                startActivity(intent);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    // 检查该权限是否已经获取
+                    int i = ContextCompat.checkSelfPermission(MyMainActivity.this, permissions[0]);
+                    // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                    if (i != PackageManager.PERMISSION_GRANTED) {
+                        // 如果没有授予该权限，就去提示用户请求
+                        startRequestPermission();
+                    }else{
+                        startCaptureActivity();
+                    }
+                }else{
+                    startCaptureActivity();
+                }
+
             }
         });
         imageView4.setOnClickListener(new View.OnClickListener() {
@@ -133,6 +136,57 @@ public class MyMainActivity extends BaseActivity {
                 startActivity(new Intent(MyMainActivity.this, JiLuActivity.class));
             }
         });
+    }
+
+    public void startCaptureActivity(){
+        Intent intent = new Intent(MyMainActivity.this, CaptureActivity.class);
+        /*ZxingConfig是配置类
+         *可以设置是否显示底部布局，闪光灯，相册，
+         * 是否播放提示音  震动
+         * 设置扫描框颜色等
+         * 也可以不传这个参数
+         * */
+        ZxingConfig config = new ZxingConfig();
+        config.setPlayBeep(false);//是否播放扫描声音 默认为true
+//                config.setShake(false);//是否震动  默认为true
+//                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
+        config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
+        config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+        config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
+//                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+        config.setShowFlashLight(false);
+        config.setShowAlbum(false);
+        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+        intent.putExtra("from", "1");
+        startActivity(intent);
+    }
+
+    // 开始提交请求权限
+    private void startRequestPermission() {
+        ActivityCompat.requestPermissions(this, permissions, 321);
+    }
+
+    // 用户权限 申请 的回调方法
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 321) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // 判断用户是否 点击了不再提醒。(检测该权限是否还可以申请)
+                    boolean b = shouldShowRequestPermissionRationale(permissions[0]);
+                    if (!b) {
+                        // 用户还是想用我的 APP 的
+                        // 提示用户去应用设置界面手动开启权限
+                        showDialogTip();
+                    } else
+                        finish();
+                } else {
+                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
     }
 
     @Override
@@ -191,6 +245,28 @@ public class MyMainActivity extends BaseActivity {
             }
             default:
                 break;
+        }
+    }
+
+    @Override
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        if (requestCode == 123) {
+
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // 检查该权限是否已经获取
+                int i = ContextCompat.checkSelfPermission(this, permissions[0]);
+                // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                if (i != PackageManager.PERMISSION_GRANTED) {
+                    // 提示用户应该去应用设置界面手动开启权限
+                  showDialogTip();
+                } else {
+                    if (dialog != null && dialog.isShowing()) {
+                        dialog.dismiss();
+                    }
+                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
+            }
         }
     }
 
@@ -397,6 +473,39 @@ public class MyMainActivity extends BaseActivity {
                 });
             }
         });
+    }
+
+    private void goToAppSetting() {
+        Intent intent = new Intent();
+
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+
+        startActivityForResult(intent, 123);
+    }
+
+    private void showDialogTip(){
+        LayoutInflater factory = LayoutInflater.from(MyMainActivity.this);
+        final View view = factory.inflate(R.layout.layout_dialog, null);
+        final TextView textView =  view.findViewById(R.id.layout_dialog_text);
+        textView.setText("相机权限未开启，请设置开启");
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton("确定",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToAppSetting();
+                    }
+                }).create();
+        dialog.setCanceledOnTouchOutside(false);//使除了dialog以外的地方不能被点击
+        dialog.show();
     }
 
     @Override

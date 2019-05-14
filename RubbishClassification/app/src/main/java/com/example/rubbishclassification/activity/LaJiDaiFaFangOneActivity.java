@@ -1,16 +1,28 @@
 package com.example.rubbishclassification.activity;
 
+import android.Manifest;
+import android.app.AlertDialog;
+import android.content.DialogInterface;
 import android.content.Intent;
+import android.content.pm.PackageManager;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Bundle;
+import android.provider.Settings;
+import android.support.annotation.NonNull;
 import android.support.annotation.Nullable;
+import android.support.v4.app.ActivityCompat;
+import android.support.v4.content.ContextCompat;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.example.rubbishclassification.R;
 import com.example.rubbishclassification.bean.UserBean;
@@ -33,6 +45,8 @@ import okhttp3.Callback;
 import okhttp3.Response;
 
 public class LaJiDaiFaFangOneActivity extends BaseActivity {
+
+    private String[] permissions = {Manifest.permission.CAMERA};
 
     private TextView textView1;
     private TextView textView2;
@@ -73,25 +87,7 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
         button2.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                Intent intent = new Intent(LaJiDaiFaFangOneActivity.this, CaptureActivity.class);
-                /*ZxingConfig是配置类
-                 *可以设置是否显示底部布局，闪光灯，相册，
-                 * 是否播放提示音  震动
-                 * 设置扫描框颜色等
-                 * 也可以不传这个参数
-                 * */
-                ZxingConfig config = new ZxingConfig();
-//                config.setPlayBeep(false);//是否播放扫描声音 默认为true
-//                config.setShake(false);//是否震动  默认为true
-//                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-                config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
-                config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
-                config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
-//                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                config.setShowFlashLight(false);
-                config.setShowAlbum(false);
-                intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                startActivityForResult(intent, 10002);
+
             }
         });
 
@@ -107,29 +103,106 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                 }
                 fangjianhao = editText1.getText().toString()+"栋"+editText2.getText().toString()+"单元"+editText3.getText().toString()+"号";
 
-                Intent intent = new Intent(LaJiDaiFaFangOneActivity.this, CaptureActivity.class);
-                /*ZxingConfig是配置类
-                 *可以设置是否显示底部布局，闪光灯，相册，
-                 * 是否播放提示音  震动
-                 * 设置扫描框颜色等
-                 * 也可以不传这个参数
-                 * */
-                ZxingConfig config = new ZxingConfig();
-//                config.setPlayBeep(false);//是否播放扫描声音 默认为true
-//                config.setShake(false);//是否震动  默认为true
-//                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
-                config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
-                config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
-                config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
-//                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
-                config.setShowFlashLight(true);
-                config.setShowAlbum(false);
-                intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
-                intent.putExtra("fangjianhao",fangjianhao);
-                startActivityForResult(intent, 10006);
+                if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                    // 检查该权限是否已经获取
+                    int i = ContextCompat.checkSelfPermission(LaJiDaiFaFangOneActivity.this, permissions[0]);
+                    // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                    if (i != PackageManager.PERMISSION_GRANTED) {
+                        // 如果没有授予该权限，就去提示用户请求
+                        startRequestPermission();
+                    }else{
+                        startCaptureActivity();
+                    }
+                }else{
+                    startCaptureActivity();
+                }
 
             }
         });
+    }
+
+    public void startCaptureActivity(){
+        Intent intent = new Intent(LaJiDaiFaFangOneActivity.this, CaptureActivity.class);
+        /*ZxingConfig是配置类
+         *可以设置是否显示底部布局，闪光灯，相册，
+         * 是否播放提示音  震动
+         * 设置扫描框颜色等
+         * 也可以不传这个参数
+         * */
+        ZxingConfig config = new ZxingConfig();
+//                config.setPlayBeep(false);//是否播放扫描声音 默认为true
+//                config.setShake(false);//是否震动  默认为true
+//                config.setDecodeBarCode(false);//是否扫描条形码 默认为true
+        config.setReactColor(R.color.colorAccent);//设置扫描框四个角的颜色 默认为白色
+        config.setFrameLineColor(R.color.colorAccent);//设置扫描框边框颜色 默认无色
+        config.setScanLineColor(R.color.colorAccent);//设置扫描线的颜色 默认白色
+//                config.setFullScreenScan(false);//是否全屏扫描  默认为true  设为false则只会在扫描框中扫描
+        config.setShowFlashLight(true);
+        config.setShowAlbum(false);
+        intent.putExtra(Constant.INTENT_ZXING_CONFIG, config);
+        intent.putExtra("fangjianhao",fangjianhao);
+        startActivityForResult(intent, 10006);
+    }
+
+    // 开始提交请求权限
+    private void startRequestPermission() {
+        ActivityCompat.requestPermissions(this, permissions, 321);
+    }
+
+    // 用户权限 申请 的回调方法
+    @Override
+    public void onRequestPermissionsResult(int requestCode, @NonNull String[] permissions, @NonNull int[] grantResults) {
+        super.onRequestPermissionsResult(requestCode, permissions, grantResults);
+
+        if (requestCode == 321) {
+            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                if (grantResults[0] != PackageManager.PERMISSION_GRANTED) {
+                    // 判断用户是否 点击了不再提醒。(检测该权限是否还可以申请)
+                    boolean b = shouldShowRequestPermissionRationale(permissions[0]);
+                    if (!b) {
+                        // 用户还是想用我的 APP 的
+                        // 提示用户去应用设置界面手动开启权限
+                        showDialogTip();
+                    } else
+                        finish();
+                } else {
+                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
+            }
+        }
+    }
+
+    private void showDialogTip(){
+        LayoutInflater factory = LayoutInflater.from(LaJiDaiFaFangOneActivity.this);
+        final View view = factory.inflate(R.layout.layout_dialog, null);
+        final TextView textView =  view.findViewById(R.id.layout_dialog_text);
+        textView.setText("相机权限未开启，请设置开启");
+        AlertDialog dialog = new AlertDialog.Builder(this)
+                .setView(view)
+                .setNegativeButton("取消", new DialogInterface.OnClickListener() {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        dialog.cancel();
+                    }
+                })
+                .setPositiveButton("确定",new DialogInterface.OnClickListener(){
+                    @Override
+                    public void onClick(DialogInterface dialog, int which) {
+                        goToAppSetting();
+                    }
+                }).create();
+        dialog.setCanceledOnTouchOutside(false);//使除了dialog以外的地方不能被点击
+        dialog.show();
+    }
+
+    private void goToAppSetting() {
+        Intent intent = new Intent();
+
+        intent.setAction(Settings.ACTION_APPLICATION_DETAILS_SETTINGS);
+        Uri uri = Uri.fromParts("package", getPackageName(), null);
+        intent.setData(uri);
+
+        startActivityForResult(intent, 123);
     }
 
     @Override
@@ -216,6 +289,20 @@ public class LaJiDaiFaFangOneActivity extends BaseActivity {
                     editText2.setText("");
                     editText3.setText("");
                     break;
+            }
+        }
+        if (requestCode == 123) {
+            if (android.os.Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+                // 检查该权限是否已经获取
+                int i = ContextCompat.checkSelfPermission(this, permissions[0]);
+                // 权限是否已经 授权 GRANTED---授权  DINIED---拒绝
+                if (i != PackageManager.PERMISSION_GRANTED) {
+                    // 提示用户应该去应用设置界面手动开启权限
+                    showDialogTip();
+                } else {
+
+                    Toast.makeText(this, "权限获取成功", Toast.LENGTH_SHORT).show();
+                }
             }
         }
     }

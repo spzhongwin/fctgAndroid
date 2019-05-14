@@ -1,7 +1,6 @@
 package com.example.rubbishclassification.adapter;
 
 import android.content.Context;
-import android.support.v4.content.ContextCompat;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -9,9 +8,7 @@ import android.widget.BaseAdapter;
 import android.widget.TextView;
 
 import com.example.rubbishclassification.R;
-import com.example.rubbishclassification.bean.QuestionModel;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -54,9 +51,9 @@ public class AddressAdapter extends BaseAdapter {
         Map<String,String> map =  myQuestionModelList.get(position);
         viewHolder.reqTestView.setText(map.get("name"));
         if(map.get("isSelected").equals("0")){
-            viewHolder.reqTestView.setTextColor(ContextCompat.getColor(myContext, R.color.black));
+            viewHolder.reqTestView.setTextColor(myContext.getResources().getColor(R.color.black));
         }else{
-            viewHolder.reqTestView.setTextColor(ContextCompat.getColor(myContext, R.color.myColor));
+            viewHolder.reqTestView.setTextColor(myContext.getResources().getColor(R.color.myColor));
         }
         return convertView;
     }
